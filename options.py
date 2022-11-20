@@ -18,15 +18,15 @@ class options:
         self.parser.add_argument('--scale_factor_downsampler', type=float, default=0.5, help='scale factor for downsampler')
         
         #Lambda Parameters
-        self.parser.add_argument('--lambda_cycle', type=int, default=5, help='lambda parameter for cycle consistency loss')
+        self.parser.add_argument('--lambda_pix', type=int, default=5, help='lambda parameter for cycle consistency loss')
         self.parser.add_argument('--lambda_interp', type=int, default=2, help='lambda parameter for masked interpolation loss')
         self.parser.add_argument('--lambda_regularization', type=int, default=2, help='lambda parameter for downsampler regularization term')
         self.parser.add_argument('--psnr_max', type=int, default=0, help='psnr')
         
         # Learning rates
-        self.parser.add_argument('--lr_G_UP', type=float, default=0.001, help='initial learning rate for upsampler generator')
-        self.parser.add_argument('--lr_G_DN', type=float, default=0.0002, help='initial learning rate for downsampler generator')
-        self.parser.add_argument('--lr_D_DN', type=float, default=0.0002, help='initial learning rate for downsampler discriminator')
+        self.parser.add_argument('--lr_DARM', type=float, default=0.001, help='initial learning rate for upsampler generator')
+        self.parser.add_argument('--lr_G', type=float, default=0.0002, help='initial learning rate for downsampler generator')
+        self.parser.add_argument('--lr_D', type=float, default=0.0002, help='initial learning rate for downsampler discriminator')
         self.parser.add_argument('--beta1', type=float, default=0.5, help='Adam momentum')
         
         # Iterations

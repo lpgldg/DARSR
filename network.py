@@ -42,9 +42,9 @@ class Network:
         self.DARM.apply(modules.weights_init_DARM)
         
         # Optimizers
-        self.optimizer_G = torch.optim.Adam(self.G.parameters(), lr=conf.lr_G_DN, betas=(conf.beta1, 0.999))
-        self.optimizer_D = torch.optim.Adam(self.D.parameters(), lr=conf.lr_D_DN, betas=(conf.beta1, 0.999))
-        self.optimizer_DARM = torch.optim.Adam(self.DARM.parameters(), lr=conf.lr_G_UP, betas=(conf.beta1, 0.999))
+        self.optimizer_G = torch.optim.Adam(self.G.parameters(), lr=conf.lr_G, betas=(conf.beta1, 0.999))
+        self.optimizer_D = torch.optim.Adam(self.D.parameters(), lr=conf.lr_D, betas=(conf.beta1, 0.999))
+        self.optimizer_DARM = torch.optim.Adam(self.DARM.parameters(), lr=conf.lr_DARM, betas=(conf.beta1, 0.999))
     
 
         self.in_img = util.read_image(conf.input_image_path)
@@ -128,9 +128,9 @@ class Network:
         # Losses
         self.loss_GAN = self.criterion_gan(self.D(self.fake_LR), True) 
 
-        self.loss_cycle_forward = self.criterion_cycle(self.rec_HR_bicubic, util.shave_a2b(self.real_HR_bicubic, self.rec_HR_bicubic)) * self.conf.lambda_cycle + self.criterion_cycle(self.sr_image, util.shave_a2b(self.real_HR, self.sr_image)) * self.conf.lambda_cycle
+        self.loss_cycle_forward = self.criterion_cycle(self.rec_HR_bicubic, util.shave_a2b(self.real_HR_bicubic, self.rec_HR_bicubic)) * self.conf.lambda_pix + self.criterion_cycle(self.sr_image, util.shave_a2b(self.real_HR, self.sr_image)) * self.conf.lambda_pix
     
-        self.loss_cycle_backward = self.criterion_cycle(self.rec_LR, util.shave_a2b(self.real_LR, self.rec_LR)) * self.conf.lambda_cycle
+        self.loss_cycle_backward = self.criterion_cycle(self.rec_LR, util.shave_a2b(self.real_LR, self.rec_LR)) * self.conf.lambda_pix
         
 
         self.loss_zero = torch.mean((self.score_rec_HR_bicubic - self.score_LR_bi)**2) + torch.mean((self.score_adapt_LR - self.score_LR_bi)**2)
