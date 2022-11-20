@@ -26,7 +26,6 @@ class Network:
         self.G = modules.Generator_G(self.conf.scale_factor).cuda()
         self.D = modules.Discriminator_D().cuda()
         self.DARM = modules.DARM().cuda()
-        #self.G_F = modules.G_F().cuda()
         
         # Losses
         self.criterion_gan = loss.GANLoss().cuda()
@@ -36,7 +35,6 @@ class Network:
         self.regularization = loss.DownsamplerRegularization(conf.scale_factor_downsampler, self.G.G_kernel_size)
 
         # Initialize modules weights
-        
         self.G.apply(modules.weights_init_G)
         self.D.apply(modules.weights_init_D)
         self.DARM.apply(modules.weights_init_DARM)
@@ -53,7 +51,7 @@ class Network:
         
         self.gpu = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.device = torch.device(self.gpu)
-        # Define DBPN Super Resolver
+        # Define Super-Resolver
         self.SR_model = SRFBN(in_channels=3, out_channels=3, num_features=32, num_steps=4, num_groups=3, upscale_factor=self.conf.scale_factor, act_type = 'prelu', norm_type = None).cuda()
         self.SR_model = torch.nn.DataParallel(self.SR_model, device_ids=[self.gpu], output_device=self.device)
         state_dict = torch.load('SRFBN/SRFBN-S_x%s_BI.pth'%self.conf.scale_factor, map_location=lambda storage, loc:storage.cuda())
@@ -61,6 +59,7 @@ class Network:
         self.SR_model = self.SR_model.module
         self.SR_model = self.SR_model.eval()
         
+        ##load degradation score estimation module
         self.DSEM = modules.DSEM().cuda()
         state_dict = torch.load('DSEM/DSEM.pth',map_location=lambda storage, loc:storage.cuda())
         self.DSEM.load_state_dict(state_dict)
@@ -181,7 +180,7 @@ class Network:
         print('*' * 60 + '\nOutput is saved in \'%s\' folder\n' % self.conf.output_dir)
     
     def quick_eval(self):
-        # Evaluate trained upsampler and downsampler on input data
+        # Evaluate on input data
         with torch.no_grad():
             corrected_img = self.DARM(self.in_img_t)
             SR_image = self.SR_model(corrected_img*255.)[-1]/255.
