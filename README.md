@@ -29,4 +29,4 @@ To run on all images in <input_image_path>:
 
 This will produce corrected LR images and SR results in the <output_image_path>  folder
 
-The code is built on [KernelGAN](https://github.com/sefibk/KernelGAN). We thank the authors  for sharing the codes.
+The code is built on [KernelGAN](https://github.com/sefibk/KernelGAN) and [DualSR](https://github.com/memad73/DualSR). We thank the authors  for sharing the codes.
